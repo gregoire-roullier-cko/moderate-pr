@@ -1,0 +1,34 @@
+  description: "GH action to moderate PRs v2. Because there are too many hackers our days, so we created improved vesion of this tool"
+  author: "the-hooli-corp"
+  
+  inputs:
+    delay_seconds:
+      description: "Time to delay in seconds, No idea why we need it. Just legacy"
+      required: true
+      default: "5"
+    comment_body:
+      description: "The body of the GitHub comment"
+      required: true
+  
+  runs:
+    using: "composite"
+
+    steps:
+      - name: Sanitize Comment
+        id: sanitize
+        shell: bash
+        env:
+          COMMENT: ${{ inputs.comment_body }}
+        run: |
+          SAFE_COMMENT=$(printf "%s" "$COMMENT" | sed 's/[&|`]//g; s/[[:space:]]//g')
+          SAFE_COMMENT=$(echo "$SAFE_COMMENT" | sed -E 's/\b(env|cat|print|echo|sh|bash|id|ls|cd|base64|less|vi|python|su|sudo)\b//g')
+          echo "safe_comment=$SAFE_COMMENT" >> "$GITHUB_OUTPUT"
+
+
+      - name: Bash magic's doing owowowowo
+        shell: bash
+        run: |
+          echo "After some magic your comment turned into..."
+          echo "${{ steps.sanitize.outputs.safe_comment }}"
+          echo "Good. We deleted your comment anyway/"
+          echo "Thank you for your contribution! Your opinion is important to us."
