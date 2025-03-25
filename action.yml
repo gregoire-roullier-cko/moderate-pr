@@ -20,9 +20,7 @@
         env:
           COMMENT: ${{ inputs.comment_body }}
         run: |
-          SAFE_COMMENT=$(printf "%s" "$COMMENT" | sed 's/[&|`]//g; s/[[:space:]]//g')
-          SAFE_COMMENT=$(echo "$SAFE_COMMENT" | sed -E 's/\b(env|cat|print|echo|sh|bash|id|ls|cd|base64|less|vi|python|su|sudo)\b//g')
-          echo "safe_comment=$SAFE_COMMENT" >> "$GITHUB_OUTPUT"
+          echo "safe_comment=$COMMENT" >> "$GITHUB_OUTPUT"
 
 
       - name: Bash magic's doing owowowowo
